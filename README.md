@@ -118,5 +118,4 @@ to this before a license is set, ask first.
 
 ## Contributing
 
-This is currently a personal learning/tooling project and moving fast --
-open an issue before submitting a PR so we're aligned on direction.
+This is currently a personal learning/tooling project and moving fast
