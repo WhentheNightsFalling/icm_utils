@@ -27,16 +27,6 @@ and parsing text output by hand.
 - Python 3.10+
 - `pandas`
 
-## Installation
-
-Not yet published to PyPI. For now, clone and install locally:
-
-```bash
-git clone https://github.com/<your-username>/icm_exchange.git
-cd icm_exchange
-pip install -e .
-```
-
 ## Quick start
 
 ```python
