@@ -51,6 +51,11 @@ class ICMSession:
         self.exchange_runner = ExchangeRunner(config)
         self.scripts = ScriptLibrary()
 
+    def _pack_options(self,**kwargs) -> str:
+        # Packs the options lists into a base64 encoded JSON string for passing to the Ruby script, if this isn't done the quotation marks won't be parsed by ruby
+        options_json = base64.b64encode(json.dumps(kwargs).encode('utf-8')).decode('ascii')
+        return options_json
+
     def list_simulations(self):
         # Lists all simulations in the database
         args =[self.database_path]
@@ -81,10 +86,9 @@ class ICMSession:
 
         return sim_dict
 
-    def _pack_options(self,**kwargs) -> str:
-        # Packs the options lists into a base64 encoded JSON string for passing to the Ruby script, if this isn't done the quotation marks won't be parsed by ruby
-        options_json = base64.b64encode(json.dumps(kwargs).encode('utf-8')).decode('ascii')
-        return options_json
+    def run_simulation(self, sim:Simulation):
+        #Runs the simulation using the most up to date network
+        pass # Placeholder for future implementation
 
     def extract_simulation_results(self, sim:Simulation,selection=None,attributes=None):
         #Extracts simulation results for one element type with multiple compatible attributes, returns a dataframe
@@ -108,17 +112,30 @@ class ICMSession:
             results_dict[file.stem] = pd.read_csv(file)
         return results_dict
 
+    def list_networks(self):
+        #lists all networks in the database, returns a list of network names
+        pass # Placeholder for future implementation
+
+    def extract_network_data(self,element_type:str):
+        #Extracts network data for a given element type, returns a dictionary of dataframes
+        pass # Placeholder for future implementation
+
+    def commit_network_changes(self,changes:dict):
+        #Commits network changes to the database, changes should be a dictionary of dataframes with keys as element types and values as dataframes with the changes
+        pass # Placeholder for future implementation
+
+
 """To-do:
     ICM Modeling Core:
         Add methods for:
             Retrieving simulation results
                 Specifying element
                 Specifying specific results (e.g. flow, depth, velocity)
-            Listing networks
-            Scenario listing and switching
              Setting up and running simulations
                 Specifying simulation parameters
                 Running simulations
+            Listing networks
+                Scenario listing and switching
             Retrieving network elements:
                 Nodes
                 Links
