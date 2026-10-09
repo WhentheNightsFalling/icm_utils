@@ -1,12 +1,6 @@
-
-import os
-import icm_utils
-from icm_utils import Simulation
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#Graphing function for demo
 def plot_flow_with_peak(flow: pd.Series, title: str,
                         xlabel: str = "Time since start (hours)",
                         ylabel: str = "Flow (m³/s)",
@@ -38,21 +32,3 @@ def plot_flow_with_peak(flow: pd.Series, title: str,
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
     plt.show()
     return fig, ax
-
-
-config = icm_utils.ICMConfig(exchange_path="C:\\Program Files\\Autodesk\\InfoWorks ICM Ultimate 2026\\ICMExchange.exe")
-
-testing_session = icm_utils.ICMSession(config=config, database_path="C:\\Users\\micha\\Desktop\\Infoworks ICM Testing database\\test_database.icmm")
-
-simlist = testing_session.list_simulations()
-
-print("There are " + str(len(simlist)) + " simulations in the database.")
-
-input("Press Enter to continue...")
-
-for sim in simlist:
-    results = testing_session.extract_simulation_results(sim,attributes=[["link", ["us_flow"]]])
-    flow = results.set_index("Seconds")["Inlet.1"]
-    flow.index = flow.index / 3600
-    plot_flow_with_peak(flow, title=f"{sim.run_name} / {sim.sim_name}: Inlet.1",
-                    save_path="flow_peak.png")
