@@ -21,6 +21,17 @@ class Simulation:
     path: str
     status: str
 
+@dataclass
+class Network:
+    id: str
+    name: str
+    path: str
+
+@dataclass
+class NetworkScenario(Network):
+    scenario_name: str
+
+
 class ScriptLibrary:
     """A library for locating Ruby scripts to be run by Exchange."""
     def __init__(self):
@@ -43,7 +54,7 @@ class ExchangeRunner:
         
 
 class ICMSession:
-    """Public facing class for interacting with Infoworks ICM."""
+    """Public facing class for interacting with the Infoworks ICM session covering elements within the model."""
 
     def __init__(self, config:ICMConfig,database_path:str):
         self.config = config
@@ -86,10 +97,6 @@ class ICMSession:
 
         return sim_dict
 
-    def run_simulation(self, sim:Simulation):
-        #Runs the simulation using the most up to date network
-        pass # Placeholder for future implementation
-
     def extract_simulation_results(self, sim:Simulation,selection=None,attributes=None):
         #Extracts simulation results for one element type with multiple compatible attributes, returns a dataframe
         results=self.batch_extract_simulation_results(sim=sim,selection=selection,attributes=attributes)
@@ -113,34 +120,67 @@ class ICMSession:
         return results_dict
 
     def list_networks(self):
-        #lists all networks in the database, returns a list of network names
+        # Lists all networks in the database
+        args =[self.database_path]
+        list_of_networks_output=[]
+        script_path = self.scripts.get_script_path("list_networks")
+        ruby_output=self.exchange_runner.run_script(script_path, args)
+        for line in ruby_output.stdout.splitlines():
+            parts = line.split('|')
+            network = Network(id=parts[0], name=parts[1], path=parts[2])
+            list_of_networks_output.append(network)
+        return list_of_networks_output
+
+    def list_scenarios(self,network:Network):
+            #lists all scenarios for a given network, returns a list of scenario names
+            pass # Placeholder for future implementation
+
+
+class OpenNetwork:
+    """Public facing class for interacting with the Infoworks ICM session covering editing of network elements and scenarios."""
+    def __init__(self, networkscenario:NetworkScenario, config:ICMConfig, database_path:str):
+        self.networkscenario = networkscenario
+        self.config = config
+        self.database_path = database_path
+
+    def nodes(self,element_type:str):
+            #Extracts network data for nodes, returns a dictionary of dataframes
+            pass # Placeholder for future implementation
+
+    def links(self,element_type:str):
+        #Extracts network data for links, returns a dictionary of dataframes
+        pass # Placeholder for future implementation
+    
+    def subcatchments(self,element_type:str):
+        #Extracts network data for subcatchments, returns a dictionary of dataframes
         pass # Placeholder for future implementation
 
-    def extract_network_data(self,element_type:str):
-        #Extracts network data for a given element type, returns a dictionary of dataframes
-        pass # Placeholder for future implementation
-
-    def commit_network_changes(self,changes:dict):
+    def other(self,element_type:str):
+            #Extracts network data for other element types, returns a dictionary of dataframes
+            pass # Placeholder for future implementation
+    
+    def commit_network_changes(self,table_name:str,table:pd.DataFrame,commit_comment:str):
         #Commits network changes to the database, changes should be a dictionary of dataframes with keys as element types and values as dataframes with the changes
         pass # Placeholder for future implementation
+
 
 
 """To-do:
     ICM Modeling Core:
         Add methods for:
-            Retrieving simulation results
-                Specifying element
-                Specifying specific results (e.g. flow, depth, velocity)
+            Retrieving simulation results Complete!
+                Specifying element Complete!
+                Specifying specific results (e.g. flow, depth, velocity) Complete!
              Setting up and running simulations
                 Specifying simulation parameters
                 Running simulations
             Listing networks
-                Scenario listing and switching
-            Retrieving network elements:
+                Scenario listing and switching 
+            Retrieving network elements: Complete!
                 Nodes
                 Links
                 Subcatchments
-            Editing network elements:
+            Editing network elements: Complete!
                 Nodes
                 Links
                 Subcatchments
