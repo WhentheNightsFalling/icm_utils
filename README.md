@@ -23,7 +23,6 @@ and parsing text output by hand.
 
 - A licensed installation of InfoWorks ICM Ultimate (this has been developed
   and tested against the **Autodesk-licensed build** of `ICMExchange.exe`
-  specifically -- see [Notes on the Autodesk build](#notes-on-the-autodesk-build) below)
 - Python 3.10+
 - `pandas`
 
@@ -61,8 +60,7 @@ results = session.extract_simulation_results(sims[0], attributes=[["Node", ["dep
 
 ## Architecture
 
-Four core pieces, each with one job -- see [`docs/package_reference.md`](docs/package_reference.md)
-for the full reasoning behind the split:
+Four core pieces, each with one job:
 
 - **`ICMConfig`** -- installation-level settings (path to the executable, timeout)
 - **`ScriptLibrary`** -- locates the bundled Ruby scripts
@@ -70,9 +68,7 @@ for the full reasoning behind the split:
 - **`ICMSession`** -- the public API; owns a database connection, composes the above
 
 Python and Ruby communicate only through subprocess arguments (in) and stdout
-or files on disk (out) -- see [`docs/argument_convention.md`](docs/argument_convention.md)
-for the conventions used for passing data reliably in both directions,
-including why some arguments are JSON+base64-encoded.
+or files on disk (out)
 
 ## Notes on the Autodesk build
 
@@ -108,4 +104,4 @@ to this before a license is set, ask first.
 
 ## Contributing
 
-This is currently a personal learning/tooling project and moving fast
+This is currently a personal learning/tooling project
